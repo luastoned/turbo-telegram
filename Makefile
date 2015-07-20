@@ -1,6 +1,6 @@
 #
-# essentials.lua Makefile for installation.
-# Copyright (c) 2014 @LuaStoned
+# Makefile for module installation.
+# Copyright (c) 2015 @LuaStoned
 # See LICENSE file for license information.
 #
 
