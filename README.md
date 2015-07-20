@@ -1,2 +1,3 @@
 # turbo-telegram
-https://telegram.org/ bot interface for Turbo.lua
+
+Telegram Bot API: https://core.telegram.org/bots/
