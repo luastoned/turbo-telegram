@@ -106,85 +106,95 @@ local function sendPhoto(chat_id, options)
 	requireArg(chat_id, "number")
 	requireArg(options, "table")
 	
+	local multipart = false
 	options.chat_id = chat_id
 	if (options.file_id) then
 		options.photo = options.file_id
 	else
+		multipart = true
 		options.photo = {
 			filename = options.filename or "moon.jpg",
 			data = options.photo,
 		}
 	end
 	
-	return request("sendPhoto", options)
+	return request("sendPhoto", options, multipart)
 end
 
 local function sendAudio(chat_id, options)
 	requireArg(chat_id, "number")
 	requireArg(options, "table")
 	
+	local multipart = false
 	options.chat_id = chat_id
 	if (options.file_id) then
 		options.audio = options.file_id
 	else
+		multipart = true
 		options.audio = {
 			filename = options.filename or "moon.ogg", -- OPUS
 			data = options.audio,
 		}
 	end
 	
-	return request("sendAudio", options)
+	return request("sendAudio", options, multipart)
 end
 
 local function sendDocument(chat_id, options)
 	requireArg(chat_id, "number")
 	requireArg(options, "table")
 	
+	local multipart = false
 	options.chat_id = chat_id
 	if (options.file_id) then
 		options.document = options.file_id
 	else
+		multipart = true
 		options.document = {
 			filename = options.filename or "moon.txt",
 			data = options.document,
 		}
 	end
 	
-	return request("sendDocument", options)
+	return request("sendDocument", options, multipart)
 end
 
 local function sendSticker(chat_id, options)
 	requireArg(chat_id, "number")
 	requireArg(options, "table")
 	
+	local multipart = false
 	options.chat_id = chat_id
 	if (options.file_id) then
 		options.sticker = options.file_id
 	else
+		multipart = true
 		options.sticker = {
 			filename = options.filename or "moon.webp",
 			data = options.sticker,
 		}
 	end
 	
-	return request("sendSticker", options)
+	return request("sendSticker", options, multipart)
 end
 
 local function sendVideo(chat_id, options)
 	requireArg(chat_id, "number")
 	requireArg(options, "table")
 	
+	local multipart = false
 	options.chat_id = chat_id
 	if (options.file_id) then
 		options.video = options.file_id
 	else
+		multipart = true
 		options.video = {
 			filename = options.filename or "moon.mp4",
 			data = options.video,
 		}
 	end
 	
-	return request("sendVideo", options)
+	return request("sendVideo", options, multipart)
 end
 
 local function sendLocation(chat_id, latitude, longitude, options)
