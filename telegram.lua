@@ -83,6 +83,11 @@ local function getUserProfilePhotos(chat_id, options)
 	return request("getUserProfilePhotos", options)
 end
 
+local function setWebhook(url)
+	requireArg(url, "string")
+	return request("setWebhook", {url = url})
+end
+
 local function sendMessage(chat_id, text, options)
 	requireArg(chat_id, "number")
 	requireArg(text, "string")
@@ -228,7 +233,7 @@ telegram.setBotToken = setBotToken
 telegram.getMe = getMe
 telegram.getUpdates = getUpdates
 telegram.getUserProfilePhotos = getUserProfilePhotos
-telegram.setWebhook = nil
+telegram.setWebhook = setWebhook
 telegram.sendMessage = sendMessage
 telegram.forwardMessage = forwardMessage
 telegram.sendPhoto = sendPhoto
