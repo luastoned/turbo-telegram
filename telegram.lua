@@ -1,6 +1,6 @@
 local telegram = {
-	_VERSION		= "v1.0.0",
-	_DESCRIPTION	= "Telegram Bot for Turbo.lua",
+	_VERSION		= "v1.1.0",
+	_DESCRIPTION	= "Telegram bot for Turbo.lua",
 	_URL			= "https://github.com/luastoned/turbo-telegram",
 	_LICENSE		= [[Copyright (c) 2015 @LuaStoned]],
 	
@@ -50,10 +50,8 @@ local function request(path, request, multi)
 	
 	local url = string.format("https://api.telegram.org/bot%s/%s", telegram.botToken, path)
 	local res = coroutine.yield(turbo.async.HTTPClient():fetch(url, options))
-	
 	if (res.error) then
-		table.print(res.error)
-		return
+		error(res.error)
 	end
 	
 	local json = turbo.escape.json_decode(res.body)
@@ -74,13 +72,18 @@ local function getUpdates(options)
 	return request("getUpdates", options)
 end
 
-local function getUserProfilePhotos(chat_id, options)
-	requireArg(chat_id, "number")
+local function getUserProfilePhotos(user_id, options)
+	requireArg(user_id, "number")
 	
 	options = options or {}
-	options.chat_id = chat_id
+	options.user_id = user_id
 	
 	return request("getUserProfilePhotos", options)
+end
+
+local function getFile(file_id)
+	requireArg(file_id, "number")
+	return request("getUpdates", {file_id = file_id})
 end
 
 local function setWebhook(url)
@@ -233,6 +236,7 @@ telegram.setBotToken = setBotToken
 telegram.getMe = getMe
 telegram.getUpdates = getUpdates
 telegram.getUserProfilePhotos = getUserProfilePhotos
+telegram.getFile = getFile
 telegram.setWebhook = setWebhook
 telegram.sendMessage = sendMessage
 telegram.forwardMessage = forwardMessage
