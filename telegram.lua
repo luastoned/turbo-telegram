@@ -1,5 +1,5 @@
 local telegram = {
-	_VERSION		= "v1.2.0",
+	_VERSION		= "v2.0.0",
 	_DESCRIPTION	= "Telegram Bot API for Turbo.lua",
 	_URL			= "https://github.com/luastoned/turbo-telegram",
 	_LICENSE		= [[Copyright (c) 2016 @LuaStoned]],
@@ -12,7 +12,7 @@ local multipart = require("multipart")
 
 -- Argument Check
 local prevFunc, prevLine, curArg = "", 0, 0
-local function requireArg(arg, expected)
+local function requireArg(arg, ...)
 	local info = debug.getinfo(2)
 	if (prevLine >= info.currentline or prevFunc ~= info.name) then
 		curArg = 0
@@ -21,7 +21,14 @@ local function requireArg(arg, expected)
 	curArg = curArg  + 1
 	prevFunc = info.name
 	prevLine = info.currentline
-	assert(type(arg) == expected, string.format("bad argument #%d to '%s' (%s expected, got %s)", curArg, info.name, expected, type(arg)))
+	local argOk = false
+	for k, expected in pairs({...}) do
+		if (type(arg) == expected) then
+			argOk = true
+		end
+	end
+	
+	assert(argOk, string.format("bad argument #%d to '%s' (%s expected, got %s)", curArg, info.name, table.concat({...}, ", "), type(arg)))
 end
 
 -- https://core.telegram.org/bots/api
@@ -50,8 +57,7 @@ function telegram:request(path, request, multi)
 	
 	local json = turbo.escape.json_decode(res.body)
 	if (not json.ok) then
-		print(json.description)
-		return
+		error(json.description)
 	end
 	
 	return json.result
@@ -76,7 +82,7 @@ function telegram:getMe()
 end
 
 function telegram:sendMessage(chat_id, text, options)
-	requireArg(chat_id, "number") -- TODO: chat_id can be number or string
+	requireArg(chat_id, "number", "string")
 	requireArg(text, "string")
 
 	options = options or {}
@@ -87,15 +93,15 @@ function telegram:sendMessage(chat_id, text, options)
 end
 
 function telegram:forwardMessage(chat_id, from_chat_id, message_id)
-	requireArg(chat_id, "number") -- TODO: chat_id can be number or string
-	requireArg(from_chat_id, "number") -- TODO: chat_id can be number or string
+	requireArg(chat_id, "number", "string")
+	requireArg(from_chat_id, "number", "string")
 	requireArg(message_id, "number")
 	
 	return self:request("forwardMessage", {chat_id = chat_id, from_chat_id = from_chat_id, message_id = message_id})
 end
 
 function telegram:sendPhoto(chat_id, options)
-	requireArg(chat_id, "number") -- TODO: chat_id can be number or string
+	requireArg(chat_id, "number", "string")
 	requireArg(options, "table")
 	
 	local multipart = false
@@ -114,7 +120,7 @@ function telegram:sendPhoto(chat_id, options)
 end
 
 function telegram:sendAudio(chat_id, options)
-	requireArg(chat_id, "number") -- TODO: chat_id can be number or string
+	requireArg(chat_id, "number", "string")
 	requireArg(options, "table")
 	
 	local multipart = false
@@ -133,7 +139,7 @@ function telegram:sendAudio(chat_id, options)
 end
 
 function telegram:sendDocument(chat_id, options)
-	requireArg(chat_id, "number") -- TODO: chat_id can be number or string
+	requireArg(chat_id, "number", "string")
 	requireArg(options, "table")
 	
 	local multipart = false
@@ -152,7 +158,7 @@ function telegram:sendDocument(chat_id, options)
 end
 
 function telegram:sendSticker(chat_id, options)
-	requireArg(chat_id, "number") -- TODO: chat_id can be number or string
+	requireArg(chat_id, "number", "string")
 	requireArg(options, "table")
 	
 	local multipart = false
@@ -171,7 +177,7 @@ function telegram:sendSticker(chat_id, options)
 end
 
 function telegram:sendVideo(chat_id, options)
-	requireArg(chat_id, "number") -- TODO: chat_id can be number or string
+	requireArg(chat_id, "number", "string")
 	requireArg(options, "table")
 	
 	local multipart = false
@@ -190,7 +196,7 @@ function telegram:sendVideo(chat_id, options)
 end
 
 function telegram:sendVoice(chat_id, options)
-	requireArg(chat_id, "number") -- TODO: chat_id can be number or string
+	requireArg(chat_id, "number", "string")
 	requireArg(options, "table")
 	
 	local multipart = false
@@ -209,7 +215,7 @@ function telegram:sendVoice(chat_id, options)
 end
 
 function telegram:sendLocation(chat_id, latitude, longitude, options)
-	requireArg(chat_id, "number") -- TODO: chat_id can be number or string
+	requireArg(chat_id, "number", "string")
 	requireArg(latitude, "number")
 	requireArg(longitude, "number")
 	
@@ -222,7 +228,7 @@ function telegram:sendLocation(chat_id, latitude, longitude, options)
 end
 
 function telegram:sendVenue(chat_id, latitude, longitude, title, address, options)
-	requireArg(chat_id, "number") -- TODO: chat_id can be number or string
+	requireArg(chat_id, "number", "string")
 	requireArg(latitude, "number")
 	requireArg(longitude, "number")
 	requireArg(title, "string")
@@ -239,7 +245,7 @@ function telegram:sendVenue(chat_id, latitude, longitude, title, address, option
 end
 
 function telegram:sendContact(chat_id, phone_number, first_name, options)
-	requireArg(chat_id, "number") -- TODO: chat_id can be number or string
+	requireArg(chat_id, "number", "string")
 	requireArg(phone_number, "string")
 	requireArg(first_name, "string")
 	
@@ -252,7 +258,7 @@ function telegram:sendContact(chat_id, phone_number, first_name, options)
 end
 
 function telegram:sendChatAction(chat_id, action)
-	requireArg(chat_id, "number") -- TODO: chat_id can be number or string
+	requireArg(chat_id, "number", "string")
 	requireArg(action, "string")
 	
 	-- typing for text messages
@@ -265,7 +271,7 @@ function telegram:sendChatAction(chat_id, action)
 end
 
 function telegram:getUserProfilePhotos(user_id, options)
-	requireArg(user_id, "number") -- TODO: chat_id can be number or string
+	requireArg(user_id, "number", "string")
 	
 	options = options or {}
 	options.user_id = user_id
@@ -280,45 +286,45 @@ function telegram:getFile(file_id)
 end
 
 function telegram:kickChatMember(chat_id, user_id)
-	requireArg(chat_id, "number") -- TODO: chat_id can be number or string
+	requireArg(chat_id, "number", "string")
 	requireArg(user_id, "number")
 	
 	return self:request("kickChatMember", {chat_id = chat_id, user_id = user_id})
 end
 
 function telegram:leaveChat(chat_id)
-	requireArg(chat_id, "number") -- TODO: chat_id can be number or string
+	requireArg(chat_id, "number", "string")
 	
 	return self:request("leaveChat", {chat_id = chat_id})
 end
 
 function telegram:unbanChatMember(chat_id, user_id)
-	requireArg(chat_id, "number") -- TODO: chat_id can be number or string
+	requireArg(chat_id, "number", "string")
 	requireArg(user_id, "number")
 	
 	return self:request("unbanChatMember", {chat_id = chat_id, user_id = user_id})
 end
 
 function telegram:getChat(chat_id)
-	requireArg(chat_id, "number") -- TODO: chat_id can be number or string
+	requireArg(chat_id, "number", "string")
 	
 	return self:request("getChat", {chat_id = chat_id})
 end
 
 function telegram:getChatAdministrators(chat_id)
-	requireArg(chat_id, "number") -- TODO: chat_id can be number or string
+	requireArg(chat_id, "number", "string")
 	
 	return self:request("getChatAdministrators", {chat_id = chat_id})
 end
 
 function telegram:getChatMembersCount(chat_id)
-	requireArg(chat_id, "number") -- TODO: chat_id can be number or string
+	requireArg(chat_id, "number", "string")
 	
 	return self:request("getChatMembersCount", {chat_id = chat_id})
 end
 
 function telegram:getChatMember(chat_id, user_id)
-	requireArg(chat_id, "number") -- TODO: chat_id can be number or string
+	requireArg(chat_id, "number", "string")
 	requireArg(user_id, "number")
 	
 	return self:request("getChatMember", {chat_id = chat_id, user_id = user_id})
