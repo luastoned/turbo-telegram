@@ -379,7 +379,7 @@ function telegram:answerInlineQuery(inline_query_id, results, options)
 
 	options = options or {}
 	options.inline_query_id = inline_query_id
-	options.results = results
+	options.results = turbo.escape.json_encode(results)
 	
 	return self:request("answerInlineQuery", options)
 end
